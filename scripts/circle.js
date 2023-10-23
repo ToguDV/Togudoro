@@ -1,58 +1,57 @@
-let circle = document.getElementById("pom-circle");  
+let circle = document.getElementById("pom-circle");
 let percentage = document.getElementById("percentage");
 let start = document.getElementById("start");
 let stop_ = document.getElementById("stop");
-localStorage.setItem("pomodoroTime", 60);
 let timerId;
+localStorage.setItem("pomodoroTime", 5);
 let pomodoroTime = localStorage.getItem("pomodoroTime");
 let secondsLeft;
 let toggleStart = true;
-let finish = false;
+let finish = true;
+let title_ = "Pomodoro terminado";
+let body_ = 'Descansa un momento!';
+let favicon_ = 'other';
 resetCounter();
-let title;
-let body;
-let favicon;
 
-
-if('Notification' in window === true) {
-    Notification.requestPermission();
-    title = "Pomodoro terminado";
-    body = 'Descansa un momento!';
-    favicon = 'other';
-    
-}
+import { Notify } from "./notify.js";
+const notify = new Notify(title_, body_, favicon_);
 
 
 
 function onStartPomodoro() {
-    if(finish) {
+    if (finish) {
         countSecond();
         clearInterval(timerId)
         timer();
         start.innerHTML = "Pause";
         toggleStart = false;
-        finish = false;
+        toggleFinish();
     }
-    
+
     else {
         //Resume/Start
-    if(toggleStart) {
-        countSecond();
-        clearInterval(timerId)
-        timer();
-        start.innerHTML = "Pause";
-        toggleStart = false;
+        if (toggleStart) {
+            countSecond();
+            clearInterval(timerId)
+            timer();
+            start.innerHTML = "Pause";
+            toggleStart = false;
+        }
+
+        //Pause
+        else {
+            clearInterval(timerId)
+            start.innerHTML = "Resume";
+            toggleStart = true;
+        }
+
     }
 
-    //Pause
-    else {
-        clearInterval(timerId)
-        start.innerHTML = "Resume";
-        toggleStart = true;
-    }
-    }
-    
 
+}
+
+function toggleFinish() {
+    finish = !finish;
 }
 
 function timer() {
@@ -61,33 +60,33 @@ function timer() {
 
 
 function countSecond() {
-    currentTime = localStorage.getItem("currentTime");
+    let currentTime = localStorage.getItem("currentTime");
     currentTime = parseInt(currentTime);
-    if(currentTime >= pomodoroTime) {
-        finish = true;
+    if (currentTime >= pomodoroTime) {
+        toggleFinish();
         start.innerHTML = "Start";
         clearInterval(timerId);
         resetCounter();
         playFinish();
-        
+
     }
 
     else {
         currentTime = currentTime + 1;
-        progressPercent = currentTime/pomodoroTime*100;
+        let progressPercent = currentTime / pomodoroTime * 100;
 
         secondsLeft = pomodoroTime - currentTime;
-        var minutes = Math.floor(secondsLeft/ 60);
-        var seconds = secondsLeft - minutes * 60;
-        if(seconds <=9 ) {
-            seconds = "0"+seconds;
+        let minutes = Math.floor(secondsLeft / 60);
+        let seconds = secondsLeft - minutes * 60;
+        if (seconds <= 9) {
+            seconds = "0" + seconds;
         }
 
-        if(minutes <=9 ) {
-            minutes = "0"+minutes;
+        if (minutes <= 9) {
+            minutes = "0" + minutes;
         }
-        document.title = minutes +":"+ seconds;
-        percentage.innerHTML = minutes +":"+ seconds;
+        document.title = minutes + ":" + seconds;
+        percentage.innerHTML = minutes + ":" + seconds;
         updateProgressPercent(progressPercent)
         localStorage.setItem("currentTime", currentTime);
     }
@@ -95,39 +94,35 @@ function countSecond() {
 
 
 function onStopPomodoro() {
-    start.innerHTML = "Start";
-    toggleStart = true;
-    finish = false
-    clearInterval(timerId)
-    resetCounter();
-}
-
-function onPausePomodoro(){
-
-}
-
-function onResumePomodoro() {
+    if (!finish) {
+        start.innerHTML = "Start";
+        toggleStart = true;
+        toggleFinish();
+        clearInterval(timerId);
+        resetCounter();
+    }
 
 }
 
 function updateProgressPercent(value) {
-    circle.setAttribute("stroke-dasharray", value+", 100");
+    circle.setAttribute("stroke-dasharray", value + ", 100");
 }
 
 function resetCounter() {
     updateProgressPercent(100)
     localStorage.setItem("currentTime", 0);
-    percentage.innerHTML = '00'+":"+'00';
-    
+    percentage.innerHTML = '00' + ":" + '00';
+
 }
 
 function playFinish() {
-    var audio = new Audio('../sounds/finish.mp3')
+    let audio = new Audio('../sounds/finish.mp3')
     audio.play();
-    let noti = new Notification(title, {body , favicon});
-  }
+    notify.show();
+
+}
 
 
 
-start.onclick = function() {onStartPomodoro()};
-stop_.onclick = function() {onStopPomodoro()};
+start.onclick = function () { onStartPomodoro() };
+stop_.onclick = function () { onStopPomodoro() };

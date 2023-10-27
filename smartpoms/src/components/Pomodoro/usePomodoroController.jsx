@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import alertsound from "../../assets/sounds/finish.mp3"
+import worker from './app.worker.js';
+import WebWorker from './WebWorker.js';
 
 const usePomodoroController = () => {
 
@@ -8,13 +10,13 @@ const usePomodoroController = () => {
   const [startButtonText, setStartButtonText] = useState("Start");
   const [finish, setFinish] = useState(true);
   const [toggleStart, setToggleStart] = useState(true);
-  const timerId = useRef(null);
-  const [pomodoroTime, setPomodoroTime] = useState(120);
+  const [pomodoroTime, setPomodoroTime] = useState(900);
+  const webWorker = useRef(null);
 
   useEffect(() => {
     onResetTime();
 
-  }, [])
+  }, []);
 
   function onClickStart() {
     if (finish) {
@@ -32,13 +34,8 @@ const usePomodoroController = () => {
   }
 
   function deleteTimer() {
-    if(timerId.current) {
-      console.log("Timer ELIMINADO! ID="+timerId.current);
-      clearInterval(timerId.current);
-    }
-
-    else {
-      console.log("No existe timer id, id ="+timerId.current);
+    if(webWorker.current) {
+      webWorker.current.terminate();
     }
   }
 
@@ -86,23 +83,29 @@ const usePomodoroController = () => {
   }
 
   function timer() {
-    let tempTimerId = window.setInterval(countSecond, 1000);
-    timerId.current = tempTimerId;
-    console.log("timer activao! id="+timerId.current);
+    countSecond();
+    webWorker.current = new WebWorker(worker);
+    webWorker.current.postMessage("start");
+
+    webWorker.current.addEventListener('message', (event) => {
+
+      countSecond();
+
+    });
   }
 
   function countSecond() {
     let currentTime = localStorage.getItem("currentTime");
     currentTime = parseInt(currentTime);
     if (currentTime >= pomodoroTime) {
-      
+
       setStartButtonText("Start");
       setToggleStart(true);
       toggleFinish();
       onResetTime();
       deleteTimer();
 
-      
+
       playSoundFinish();
       console.log("pomodoro acabao!");
     }
@@ -135,7 +138,7 @@ const usePomodoroController = () => {
   function playSoundFinish() {
     let audio = new Audio(alertsound);
     audio.play();
-    
+
 
   }
 

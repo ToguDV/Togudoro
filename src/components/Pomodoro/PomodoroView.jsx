@@ -3,10 +3,10 @@ import { Notify } from "../../utils/notify";
 import { useState, useEffect } from 'react';
 import usePomodoroController from './usePomodoroController';
 
-const Pomodoro = () => {
+const PomodoroView = () => {
 
 
-    const { startText, onStartPomodoro, onStopPomodoro, circle, progressTime} = usePomodoroController();
+    const { startText, onStartPomodoro, onStopPomodoro, circle, progressTime, pomReason} = usePomodoroController();
 
 
     return (
@@ -16,6 +16,7 @@ const Pomodoro = () => {
             </div>
 
             <div className="single-chart">
+            <h1 className='Reason'>{pomReason}</h1>
                 <svg viewBox="0 0 36 36" className="circular-chart orange">
                     <path className="circle-bg"
                         d="M18 2.0845
@@ -44,4 +45,4 @@ const Pomodoro = () => {
     )
 }
 
-export default Pomodoro
+export default PomodoroView

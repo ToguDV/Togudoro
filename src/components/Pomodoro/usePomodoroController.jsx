@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import alertsound from "../../assets/sounds/finish.mp3"
 import worker from './app.worker.js';
-import WebWorker from './WebWorker.js';
+import WebWorker from '../../utils/WebWorker.js';
 
 const usePomodoroController = () => {
 
@@ -11,7 +11,8 @@ const usePomodoroController = () => {
   const [finish, setFinish] = useState(true);
   const [toggleStart, setToggleStart] = useState(true);
   const [pomodoroTime, setPomodoroTime] = useState(900);
-  const webWorker = useRef(null);
+  const [pomReason, setPomReason] = useState("Work");
+  const webWorker = useRef(null); 
 
   useEffect(() => {
     onResetTime();
@@ -34,7 +35,7 @@ const usePomodoroController = () => {
   }
 
   function deleteTimer() {
-    if(webWorker.current) {
+    if (webWorker.current) {
       webWorker.current.terminate();
     }
   }
@@ -94,20 +95,22 @@ const usePomodoroController = () => {
     });
   }
 
+  function onFinish() {
+    let notification = new Notify("Hola", "test", "xd");
+
+    setStartButtonText("Start");
+    setToggleStart(true);
+    toggleFinish();
+    onResetTime();
+    deleteTimer();
+    playSoundFinish();
+  }
+
   function countSecond() {
     let currentTime = localStorage.getItem("currentTime");
     currentTime = parseInt(currentTime);
     if (currentTime >= pomodoroTime) {
-
-      setStartButtonText("Start");
-      setToggleStart(true);
-      toggleFinish();
-      onResetTime();
-      deleteTimer();
-
-
-      playSoundFinish();
-      console.log("pomodoro acabao!");
+      onFinish();
     }
 
     else {
@@ -148,7 +151,8 @@ const usePomodoroController = () => {
     onStopPomodoro: onStopPomodoro,
     onResetTime: onResetTime,
     circle: circle,
-    progressTime: progressTime
+    progressTime: progressTime,
+    pomReason: pomReason
 
   };
 };

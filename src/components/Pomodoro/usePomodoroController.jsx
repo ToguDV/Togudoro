@@ -86,13 +86,15 @@ const usePomodoroController = () => {
 
   function timer() {
     webWorker.current = new WebWorker(worker);
-    webWorker.current.postMessage({currentTime:currentTime.current, pomodoroTime:pomodoroTime});
+    let auxCurrentTime = currentTime.current;
+    webWorker.current.postMessage({auxCurrentTime:auxCurrentTime, pomodoroTimeAux:pomodoroTime});
 
     webWorker.current.addEventListener('message', (e) => {
-      const { minutes, seconds } = e.data;
+      const { minutes, seconds, setProgressPercent } = e.data;
       setProgressTime(minutes + ":" + seconds)
       document.title = minutes + ":" + seconds;
       updateProgressBar(setProgressPercent)
+      console.log("mensaje recibio");
 
     });
   }

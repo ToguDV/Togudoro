@@ -1,14 +1,22 @@
 export default () => {
+    let currentTime = 0;
+    let pomodoroTime = 0;
     self.addEventListener('message', e => { // eslint-disable-line no-restricted-globals
         if (!e) return;
-        const { currenTime, pomodoroTime } = e.data;
-        let tempTimerId = setInterval(countSecond(currenTime, pomodoroTime), 1000);
+        let { auxCurrentTime, pomodoroTimeAux } = e.data;
+        currentTime = auxCurrentTime;
+        pomodoroTime = pomodoroTimeAux;
+        console.log("currentTime:"+auxCurrentTime);
+        console.log("Pomodoro:"+pomodoroTime);
+        let tempTimerId = setInterval(countSecond, 1000);
         
-    })
+    });
 
-    function countSecond(currentTime, pomodoroTime) {
+    function countSecond() {
+        
+        console.log("worker second");
         if (currentTime >= pomodoroTime) {
-          onFinish();
+          
         }
     
         else {
@@ -26,7 +34,8 @@ export default () => {
           if (minutes <= 9) {
             minutes = "0" + minutes;
           }
-          postMessage({minutes:minutes, seconds:seconds});
+          postMessage({minutes:minutes, seconds:seconds, setProgressPercent:setProgressPercent});
+          console.log("mensaje posteao");
         }
       }
   }

@@ -12,7 +12,8 @@ const usePomodoroController = () => {
   const [toggleStart, setToggleStart] = useState(true);
   const [pomodoroTime, setPomodoroTime] = useState(900);
   const [pomReason, setPomReason] = useState("Work");
-  const webWorker = useRef(null); 
+  const currentTime = useRef(0);
+  const webWorker = useRef(null);
 
   useEffect(() => {
     onResetTime();
@@ -74,7 +75,7 @@ const usePomodoroController = () => {
 
   function onResetTime() {
     updateProgressBar(0)
-    localStorage.setItem("currentTime", 0);
+    currentTime.current = 0;
     setProgressTime('00' + ":" + '00');
 
   }
@@ -84,19 +85,19 @@ const usePomodoroController = () => {
   }
 
   function timer() {
-    countSecond();
     webWorker.current = new WebWorker(worker);
-    webWorker.current.postMessage("start");
+    webWorker.current.postMessage({currentTime:currentTime.current, pomodoroTime:pomodoroTime});
 
-    webWorker.current.addEventListener('message', (event) => {
-
-      countSecond();
+    webWorker.current.addEventListener('message', (e) => {
+      const { minutes, seconds } = e.data;
+      setProgressTime(minutes + ":" + seconds)
+      document.title = minutes + ":" + seconds;
+      updateProgressBar(setProgressPercent)
 
     });
   }
 
   function onFinish() {
-    let notification = new Notify("Hola", "test", "xd");
 
     setStartButtonText("Start");
     setToggleStart(true);
@@ -104,34 +105,6 @@ const usePomodoroController = () => {
     onResetTime();
     deleteTimer();
     playSoundFinish();
-  }
-
-  function countSecond() {
-    let currentTime = localStorage.getItem("currentTime");
-    currentTime = parseInt(currentTime);
-    if (currentTime >= pomodoroTime) {
-      onFinish();
-    }
-
-    else {
-      currentTime = currentTime + 1;
-      let setProgressPercent = (currentTime / pomodoroTime * 100);
-
-      let secondsLeft = pomodoroTime - currentTime;
-      let minutes = Math.floor(secondsLeft / 60);
-      let seconds = secondsLeft - minutes * 60;
-      if (seconds <= 9) {
-        seconds = "0" + seconds;
-      }
-
-      if (minutes <= 9) {
-        minutes = "0" + minutes;
-      }
-      setProgressTime(minutes + ":" + seconds)
-      document.title = minutes + ":" + seconds;
-      updateProgressBar(setProgressPercent)
-      localStorage.setItem("currentTime", currentTime);
-    }
   }
 
   function updateProgressBar(value) {

@@ -113,6 +113,7 @@ const usePomodoroController = () => {
 
       else {
         const { minutes, seconds, setProgressPercent } = e.data;
+        currentTime.current = currentTime.current + 1;
         setProgressTime(minutes + ":" + seconds);
         document.title = minutes + ":" + seconds;
         updateProgressBar(setProgressPercent)

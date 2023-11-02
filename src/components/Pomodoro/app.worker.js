@@ -16,7 +16,7 @@ export default () => {
         
         console.log("worker second");
         if (currentTime >= pomodoroTime) {
-          
+          postMessage("stop");
         }
     
         else {

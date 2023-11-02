@@ -99,7 +99,8 @@ const usePomodoroController = () => {
 
     setProgressTime(minutes + ":" + seconds);
     document.title = minutes + ":" + seconds;
-    updateProgressBar(0)
+    let setProgressPercent = (currentTime.current / pomodoroTime * 100);
+    updateProgressBar(setProgressPercent)
 
     webWorker.current = new WebWorker(worker);
     let auxCurrentTime = currentTime.current;

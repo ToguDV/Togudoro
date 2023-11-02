@@ -10,7 +10,7 @@ const usePomodoroController = () => {
   const [startButtonText, setStartButtonText] = useState("Start");
   const [finish, setFinish] = useState(true);
   const [toggleStart, setToggleStart] = useState(true);
-  const [pomodoroTime, setPomodoroTime] = useState(10);
+  const [pomodoroTime, setPomodoroTime] = useState(900);
   const [pomReason, setPomReason] = useState("Work");
   const currentTime = useRef(0);
   const webWorker = useRef(null);
@@ -85,6 +85,22 @@ const usePomodoroController = () => {
   }
 
   function timer() {
+    let secondsLeft = pomodoroTime - currentTime.current;
+    let minutes = Math.floor(secondsLeft / 60);
+    let seconds = secondsLeft - minutes * 60;
+    document.title = minutes + ":" + seconds;
+    if (seconds <= 9) {
+      seconds = "0" + seconds;
+    }
+
+    if (minutes <= 9) {
+      minutes = "0" + minutes;
+    }
+
+    setProgressTime(minutes + ":" + seconds);
+    document.title = minutes + ":" + seconds;
+    updateProgressBar(0)
+
     webWorker.current = new WebWorker(worker);
     let auxCurrentTime = currentTime.current;
     webWorker.current.postMessage({auxCurrentTime:auxCurrentTime, pomodoroTimeAux:pomodoroTime});
@@ -97,7 +113,7 @@ const usePomodoroController = () => {
 
       else {
         const { minutes, seconds, setProgressPercent } = e.data;
-        setProgressTime(minutes + ":" + seconds)
+        setProgressTime(minutes + ":" + seconds);
         document.title = minutes + ":" + seconds;
         updateProgressBar(setProgressPercent)
         console.log("mensaje recibio");

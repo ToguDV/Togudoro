@@ -6,15 +6,12 @@ export default () => {
         let { auxCurrentTime, pomodoroTimeAux } = e.data;
         currentTime = auxCurrentTime;
         pomodoroTime = pomodoroTimeAux;
-        console.log("currentTime:"+auxCurrentTime);
-        console.log("Pomodoro:"+pomodoroTime);
         let tempTimerId = setInterval(countSecond, 1000);
         
     });
 
     function countSecond() {
         
-        console.log("worker second");
         if (currentTime >= pomodoroTime) {
           postMessage("stop");
         }
@@ -35,7 +32,6 @@ export default () => {
             minutes = "0" + minutes;
           }
           postMessage({minutes:minutes, seconds:seconds, setProgressPercent:setProgressPercent});
-          console.log("mensaje posteao");
         }
       }
   }

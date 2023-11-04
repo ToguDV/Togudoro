@@ -2,12 +2,16 @@ import React from 'react'
 import { Notify } from "../../utils/notify";
 import { useState, useEffect } from 'react';
 import usePomodoroController from './usePomodoroController';
+import PomodoroSettings from './PomodoroSettings';
 
 const PomodoroView = () => {
 
 
     const { startText, onStartPomodoro, onStopPomodoro, circle, progressTime, pomReason} = usePomodoroController();
 
+    function onSaveSettings() {
+        console.log("ea");
+    }
 
     return (
         <>
@@ -40,7 +44,7 @@ const PomodoroView = () => {
 
 
             <script type="module" src="/scripts/circle.js"></script>
-
+            <PomodoroSettings onSave={onSaveSettings}></PomodoroSettings>
         </>
     )
 }

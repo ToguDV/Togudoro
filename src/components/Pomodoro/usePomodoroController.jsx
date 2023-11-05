@@ -109,6 +109,8 @@ const usePomodoroController = () => {
     webWorker.current.addEventListener('message', (e) => {
       if (!e) return;
       if(e.data === "stop") {
+        let audio = new Audio(alertsound);
+        audio.play();
         onFinish();
       }
 
@@ -131,19 +133,12 @@ const usePomodoroController = () => {
     toggleFinish();
     onResetTime();
     deleteTimer();
-    playSoundFinish();
   }
 
   function updateProgressBar(value) {
     setCircle(value);
   }
 
-  function playSoundFinish() {
-    let audio = new Audio(alertsound);
-    audio.play();
-
-
-  }
 
   return {
     startText: startButtonText,

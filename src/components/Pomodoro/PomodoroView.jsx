@@ -2,7 +2,7 @@ import React from 'react'
 import { Notify } from "../../utils/notify";
 import { useState, useEffect } from 'react';
 import usePomodoroController from './usePomodoroController';
-import PomodoroSettings from './PomodoroSettings';
+import PomodoroSettings from './settings/PomodoroSettings';
 
 const PomodoroView = () => {
 

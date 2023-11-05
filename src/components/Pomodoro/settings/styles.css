@@ -1,7 +1,9 @@
 .settings-background {
     margin-top: 20px;
+    margin-bottom: 30px;
     display: flex;
     align-items: center;
     flex-direction: column;
-    background-color: aliceblue;
+    background-color: #30336b;
+    border-radius: 15px;
 }

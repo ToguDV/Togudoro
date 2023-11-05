@@ -14,6 +14,7 @@ const usePomodoroController = () => {
   const [pomReason, setPomReason] = useState("Work");
   const currentTime = useRef(0);
   const webWorker = useRef(null);
+  const [audio, setaudio] = useState(new Audio(alertsound));
 
   useEffect(() => {
     onResetTime();
@@ -109,7 +110,6 @@ const usePomodoroController = () => {
     webWorker.current.addEventListener('message', (e) => {
       if (!e) return;
       if(e.data === "stop") {
-        let audio = new Audio(alertsound);
         audio.play();
         onFinish();
       }

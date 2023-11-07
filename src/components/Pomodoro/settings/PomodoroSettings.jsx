@@ -6,6 +6,9 @@ import './styles.css'
 import GlobalStyles from '@mui/material/GlobalStyles';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { lime, purple } from '@mui/material/colors';
+import { Alert, Snackbar } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 const theme = createTheme({
@@ -30,6 +33,35 @@ const PomodoroSettings = ({ onSave }) => {
   const [minRest, setMinRest] = useState(1);
   const [maxRest, setMaxRest] = useState(1);
 
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const action = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
+
+
   useEffect(() => {
     let auxMinWork = localStorage.getItem('minWork');
     let auxMaxWork = localStorage.getItem('maxWork');
@@ -45,20 +77,28 @@ const PomodoroSettings = ({ onSave }) => {
     setMinRest(auxMinRest);
     setMaxRest(auxMaxRest);
 
+    localStorage.setItem('minWork', auxMinWork);
+    localStorage.setItem('maxWork', auxMaxWork);
+    localStorage.setItem('minRest', auxMinRest);
+    localStorage.setItem('maxRest', auxMaxRest);
+
   }, []);
 
 
   function xd() {
+    handleClick();
     localStorage.setItem('minWork', minWork);
     localStorage.setItem('maxWork', maxWork);
     localStorage.setItem('minRest', minRest);
     localStorage.setItem('maxRest', maxRest);
     onSave();
   }
-
+  
   return (
     <>
       <ThemeProvider theme={theme}>
+        <Snackbar open={open} autoHideDuration={5000} onClose={handleClose} action={action} message="Settings saved">
+        </Snackbar>
         <div className='settings-background'>
           <h1>Settings</h1>
           <div className='input-group'>
@@ -72,7 +112,7 @@ const PomodoroSettings = ({ onSave }) => {
             <TextField className='input' value={maxRest} onChange={event => { setMaxRest(event.target.value) }} id="outlined-basic" label="Max time" variant="filled" type='number' title='The max time that the Togudoro can be adjusted' helperText="Time in seconds. Default: 1800" />
           </div>
           <div className='btnSave'>
-            <Button onClick={xd} variant="outlined">Save</Button>
+            <Button type='submit' onClick={xd} variant="outlined">Save</Button>
           </div>
 
         </div>

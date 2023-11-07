@@ -7,7 +7,30 @@ import PomodoroSettings from './settings/PomodoroSettings';
 const PomodoroView = () => {
 
 
-    const { startText, onStartPomodoro, onStopPomodoro, circle, progressTime, pomReason} = usePomodoroController();
+    const { startText, onStartPomodoro, onStopPomodoro, circle, progressTime, pomReason, onBtnWork, onBtnRest, onBtnLongRest} = usePomodoroController();
+    const [workClass, setWorkClass] = useState("");
+    const [restClass, setRestClass] = useState("");
+    const [longRestClass, setLongRestClass] = useState("");
+
+    useEffect(() => {
+        setWorkClass("");
+        setRestClass("");
+        setLongRestClass("");
+
+      if(pomReason === "Work") {
+        setWorkClass("activated");
+      }
+
+      else if(pomReason === "Rest") {
+        setRestClass("activated");
+      }
+
+      else if(pomReason === "Long Rest") {
+        setLongRestClass("activated");
+      }
+
+    }, [pomReason]);
+    
 
     function onSaveSettings() {
         console.log("guardo");
@@ -20,7 +43,11 @@ const PomodoroView = () => {
             </div>
 
             <div className="single-chart">
-            <h1 className='Reason'>{pomReason}</h1>
+            <div className="toggle-container">
+            <button className={"btn-reason " + workClass} id="work" onClick={onBtnWork}>Work</button>
+            <button className={"btn-reason " + restClass} id="rest" onClick={onBtnRest}>Rest</button>
+            <button className={"btn-reason " + longRestClass} id="longRest" onClick={onBtnLongRest}>Long Rest</button>
+            </div>
                 <svg viewBox="0 0 36 36" className="circular-chart orange">
                     <path className="circle-bg"
                         d="M18 2.0845

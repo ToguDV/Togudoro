@@ -10,8 +10,10 @@ const usePomodoroController = () => {
   const [startButtonText, setStartButtonText] = useState("Start");
   const [finish, setFinish] = useState(true);
   const [toggleStart, setToggleStart] = useState(true);
-  const [pomodoroTime, setPomodoroTime] = useState(900);
+
+  const [pomodoroTime, setPomodoroTime] = useState(localStorage.getItem("minWork"));
   const [pomReason, setPomReason] = useState("Work");
+
   const currentTime = useRef(0);
   const webWorker = useRef(null);
   const [audio, setaudio] = useState(new Audio(alertsound));
@@ -105,11 +107,11 @@ const usePomodoroController = () => {
 
     webWorker.current = new WebWorker(worker);
     let auxCurrentTime = currentTime.current;
-    webWorker.current.postMessage({auxCurrentTime:auxCurrentTime, pomodoroTimeAux:pomodoroTime});
+    webWorker.current.postMessage({ auxCurrentTime: auxCurrentTime, pomodoroTimeAux: pomodoroTime });
 
     webWorker.current.addEventListener('message', (e) => {
       if (!e) return;
-      if(e.data === "stop") {
+      if (e.data === "stop") {
         audio.play();
         onFinish();
       }
@@ -139,6 +141,20 @@ const usePomodoroController = () => {
     setCircle(value);
   }
 
+  function onBtnWork() {
+    setPomReason("Work");
+  }
+
+  function onBtnRest() {
+    setPomReason("Rest");
+  }
+
+  function onBtnLongRest() {
+    setPomReason("Long Rest");
+  }
+
+
+
 
   return {
     startText: startButtonText,
@@ -147,7 +163,10 @@ const usePomodoroController = () => {
     onResetTime: onResetTime,
     circle: circle,
     progressTime: progressTime,
-    pomReason: pomReason
+    pomReason: pomReason,
+    onBtnWork:onBtnWork,
+    onBtnRest:onBtnRest,
+    onBtnLongRest:onBtnLongRest
 
   };
 };

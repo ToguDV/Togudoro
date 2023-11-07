@@ -39,7 +39,7 @@ const PomodoroView = () => {
     return (
         <>
             <div className="header">
-                <h1>Pomodoro</h1>
+                <h1>Togudoro</h1>
             </div>
 
             <div className="single-chart">

@@ -101,7 +101,7 @@ const usePomodoroController = () => {
     }
 
     setProgressTime(minutes + ":" + seconds);
-    document.title = minutes + ":" + seconds;
+    document.title = (minutes + ":" + seconds) + " Togudoro";
     let setProgressPercent = (currentTime.current / pomodoroTime * 100);
     updateProgressBar(setProgressPercent)
 
@@ -120,7 +120,7 @@ const usePomodoroController = () => {
         const { minutes, seconds, setProgressPercent } = e.data;
         currentTime.current = currentTime.current + 1;
         setProgressTime(minutes + ":" + seconds);
-        document.title = minutes + ":" + seconds;
+        document.title = (minutes + ":" + seconds) + " Togudoro";
         updateProgressBar(setProgressPercent)
         console.log("mensaje recibio");
       }
@@ -143,14 +143,17 @@ const usePomodoroController = () => {
 
   function onBtnWork() {
     setPomReason("Work");
+    onStopPomodoro();
   }
 
   function onBtnRest() {
     setPomReason("Rest");
+    onStopPomodoro();
   }
 
   function onBtnLongRest() {
     setPomReason("Long Rest");
+    onStopPomodoro();
   }
 
 

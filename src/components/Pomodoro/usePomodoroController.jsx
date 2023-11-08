@@ -11,7 +11,7 @@ const usePomodoroController = () => {
   const [finish, setFinish] = useState(true);
   const [toggleStart, setToggleStart] = useState(true);
 
-  const [pomodoroTime, setPomodoroTime] = useState(localStorage.getItem("minWork"));
+  const [pomodoroTime, setPomodoroTime] = useState(getPomodoroTime());
   const [pomReason, setPomReason] = useState("Work");
 
   const currentTime = useRef(0);
@@ -156,6 +156,14 @@ const usePomodoroController = () => {
     onStopPomodoro();
   }
 
+  function getPomodoroTime() {
+    return localStorage.getItem("minWork");
+  }
+
+  function updatePomodoroTime() {
+    setPomodoroTime(getPomodoroTime());
+  }
+
 
 
 
@@ -169,7 +177,8 @@ const usePomodoroController = () => {
     pomReason: pomReason,
     onBtnWork:onBtnWork,
     onBtnRest:onBtnRest,
-    onBtnLongRest:onBtnLongRest
+    onBtnLongRest:onBtnLongRest,
+    updatePomodoroTime:updatePomodoroTime
 
   };
 };

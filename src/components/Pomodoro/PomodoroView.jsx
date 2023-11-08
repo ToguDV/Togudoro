@@ -7,7 +7,7 @@ import PomodoroSettings from './settings/PomodoroSettings';
 const PomodoroView = () => {
 
 
-    const { startText, onStartPomodoro, onStopPomodoro, circle, progressTime, pomReason, onBtnWork, onBtnRest, onBtnLongRest} = usePomodoroController();
+    const { startText, onStartPomodoro, onStopPomodoro, circle, progressTime, pomReason, onBtnWork, onBtnRest, onBtnLongRest, updatePomodoroTime} = usePomodoroController();
     const [workClass, setWorkClass] = useState("");
     const [restClass, setRestClass] = useState("");
     const [longRestClass, setLongRestClass] = useState("");
@@ -29,11 +29,13 @@ const PomodoroView = () => {
         setLongRestClass("activated");
       }
 
+      updatePomodoroTime();
+
     }, [pomReason]);
     
 
     function onSaveSettings() {
-        console.log("guardo");
+        updatePomodoroTime();
     }
 
     return (

@@ -11,8 +11,8 @@ const usePomodoroController = () => {
   const [finish, setFinish] = useState(true);
   const [toggleStart, setToggleStart] = useState(true);
 
-  const [pomodoroTime, setPomodoroTime] = useState(getPomodoroTime());
   const [pomReason, setPomReason] = useState("Work");
+  const pomodoroTime = useRef(getPomodoroTime());
   const pomCount = useRef(0);
 
   const currentTime = useRef(0);
@@ -80,7 +80,7 @@ const usePomodoroController = () => {
   function onResetTime() {
     updateProgressBar(0)
     currentTime.current = 0;
-    let secondsLeft = pomodoroTime - currentTime.current;
+    let secondsLeft = pomodoroTime.current - currentTime.current;
     let minutes = Math.floor(secondsLeft / 60);
     let seconds = secondsLeft - minutes * 60;
     document.title = minutes + ":" + seconds;
@@ -102,7 +102,7 @@ const usePomodoroController = () => {
   }
 
   function timer() {
-    let secondsLeft = pomodoroTime - currentTime.current;
+    let secondsLeft = pomodoroTime.current - currentTime.current;
     let minutes = Math.floor(secondsLeft / 60);
     let seconds = secondsLeft - minutes * 60;
     document.title = minutes + ":" + seconds;
@@ -116,12 +116,12 @@ const usePomodoroController = () => {
 
     setProgressTime(minutes + ":" + seconds);
     document.title = (minutes + ":" + seconds) + " Togudoro";
-    let setProgressPercent = (currentTime.current / pomodoroTime * 100);
+    let setProgressPercent = (currentTime.current / pomodoroTime.current  * 100);
     updateProgressBar(setProgressPercent)
 
     webWorker.current = new WebWorker(worker);
     let auxCurrentTime = currentTime.current;
-    webWorker.current.postMessage({ auxCurrentTime: auxCurrentTime, pomodoroTimeAux: pomodoroTime });
+    webWorker.current.postMessage({ auxCurrentTime: auxCurrentTime, pomodoroTimeAux: pomodoroTime.current});
 
     webWorker.current.addEventListener('message', (e) => {
       if (!e) return;
@@ -175,7 +175,7 @@ const usePomodoroController = () => {
   }
 
   function updatePomodoroTime() {
-    setPomodoroTime(getPomodoroTime());
+    pomodoroTime.current = getPomodoroTime();
   }
 
   function calcReason() {

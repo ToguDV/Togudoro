@@ -13,6 +13,7 @@ const usePomodoroController = () => {
 
   const [pomodoroTime, setPomodoroTime] = useState(getPomodoroTime());
   const [pomReason, setPomReason] = useState("Work");
+  const pomCount = useRef(0);
 
   const currentTime = useRef(0);
   const webWorker = useRef(null);
@@ -79,7 +80,20 @@ const usePomodoroController = () => {
   function onResetTime() {
     updateProgressBar(0)
     currentTime.current = 0;
-    setProgressTime('00' + ":" + '00');
+    let secondsLeft = pomodoroTime - currentTime.current;
+    let minutes = Math.floor(secondsLeft / 60);
+    let seconds = secondsLeft - minutes * 60;
+    document.title = minutes + ":" + seconds;
+    if (seconds <= 9) {
+      seconds = "0" + seconds;
+    }
+
+    if (minutes <= 9) {
+      minutes = "0" + minutes;
+    }
+
+    setProgressTime(minutes + ":" + seconds);
+    document.title = (minutes + ":" + seconds) + " Togudoro";
 
   }
 
@@ -122,7 +136,6 @@ const usePomodoroController = () => {
         setProgressTime(minutes + ":" + seconds);
         document.title = (minutes + ":" + seconds) + " Togudoro";
         updateProgressBar(setProgressPercent)
-        console.log("mensaje recibio");
       }
 
     });
@@ -130,6 +143,7 @@ const usePomodoroController = () => {
 
   function onFinish() {
 
+    calcReason();
     setStartButtonText("Start");
     setToggleStart(true);
     toggleFinish();
@@ -164,6 +178,24 @@ const usePomodoroController = () => {
     setPomodoroTime(getPomodoroTime());
   }
 
+  function calcReason() {
+    if (pomReason === "Rest" || pomReason === "Long Rest") {
+      if(pomReason === "Long Rest") pomCount.current = 0;
+      setPomReason("Work");
+    }
+
+    else {
+      pomCount.current = pomCount.current + 1;
+      if (pomCount.current < 3) {
+        setPomReason("Rest");
+      }
+
+      else {
+        setPomReason("Long Rest");
+      }
+    }
+  }
+
 
 
 
@@ -175,10 +207,10 @@ const usePomodoroController = () => {
     circle: circle,
     progressTime: progressTime,
     pomReason: pomReason,
-    onBtnWork:onBtnWork,
-    onBtnRest:onBtnRest,
-    onBtnLongRest:onBtnLongRest,
-    updatePomodoroTime:updatePomodoroTime
+    onBtnWork: onBtnWork,
+    onBtnRest: onBtnRest,
+    onBtnLongRest: onBtnLongRest,
+    updatePomodoroTime: updatePomodoroTime
 
   };
 };

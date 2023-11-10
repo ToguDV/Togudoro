@@ -18,6 +18,7 @@ const usePomodoroController = () => {
   const currentTime = useRef(0);
   const webWorker = useRef(null);
   const [audio, setaudio] = useState(new Audio(alertsound));
+  const [isQuestion, setIsQuestion] = useState(false);
 
   useEffect(() => {
     onResetTime();
@@ -149,6 +150,9 @@ const usePomodoroController = () => {
     toggleFinish();
     onResetTime();
     deleteTimer();
+    if(pomReason === "Work") {
+      setIsQuestion(true);
+    }
   }
 
   function updateProgressBar(value) {
@@ -168,6 +172,18 @@ const usePomodoroController = () => {
   function onBtnLongRest() {
     setPomReason("Long Rest");
     onStopPomodoro();
+  }
+
+  function onBtnHard() {
+
+    setIsQuestion(false);
+    localStorage.setItem('difficult', localStorage.getItem("difficult") + 1);
+  }
+  function onBtnNormal() {
+    setIsQuestion(false);
+  }
+  function onBtnEasy() {
+    setIsQuestion(false);
   }
 
   function getPomodoroTime() {
@@ -210,7 +226,11 @@ const usePomodoroController = () => {
     onBtnWork: onBtnWork,
     onBtnRest: onBtnRest,
     onBtnLongRest: onBtnLongRest,
-    updatePomodoroTime: updatePomodoroTime
+    updatePomodoroTime: updatePomodoroTime,
+    isQuestion:isQuestion,
+    onBtnEasy,
+    onBtnNormal,
+    onBtnHard
 
   };
 };

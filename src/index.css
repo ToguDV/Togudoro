@@ -191,7 +191,7 @@ h2 {
   color: var(--text);
 }
 
-.btnSave{
+.btnSave {
   margin-top: 20px;
   margin-bottom: 20px;
 }
@@ -259,21 +259,38 @@ h2 {
   transition: 0.3s;
 }
 
+.question-button {
+  padding: 10px;
+  margin: 10px;
+  border-radius: 12px;
+  border-style: none;
+  width: 100px;
+  color: var(--text);
+  margin-top: 30px;
+  transition: 0.3s;
+}
+
 button:hover {
   cursor: pointer;
 }
 
 .btn-start:hover,
-.btn-stop:hover, 
-.btn-reason:hover {
-  background-color: #4834d4;
+.btn-stop:hover,
+.btn-reason:hover,
+.question-button:hover {
+  background-color: #4834d4 !important;
 }
 
-.btn-start, .btn-reason.activated {
+.btn-start,
+.btn-reason.activated {
   background-color: var(--featured);
 }
 
-.btn-stop, .btn-reason {
+.btn-stop,
+.btn-reason,
+.question-button.normal,
+.question-button.hard,
+.question-button.easy {
   background-color: var(--bg-secondary);
 }
 
@@ -288,11 +305,12 @@ button:hover {
   transition: 0.3s;
 }
 
-
-
-
-
 .toggle-container {
   display: flex;
   justify-content: center;
+}
+
+.question {
+  font-size: 2em;
+  text-align: center;
 }

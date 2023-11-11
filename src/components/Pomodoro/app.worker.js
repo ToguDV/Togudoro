@@ -18,7 +18,6 @@ export default () => {
     
         else {
           currentTime = (currentTime + 1);
-          console.log(currentTime);
           let setProgressPercent = (currentTime / pomodoroTime * 100);
     
           let secondsLeft = pomodoroTime - currentTime;

@@ -2,8 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import alertsound from "../../assets/sounds/finish.mp3"
 import worker from './app.worker.js';
 import WebWorker from '../../utils/WebWorker.js';
+import useTimeCalculator from "./useTimeCalculator.jsx";
 
 const usePomodoroController = () => {
+
+  const {calculateTime} = useTimeCalculator();
 
   const [circle, setCircle] = useState(100);
   const [progressTime, setProgressTime] = useState("00:00");
@@ -12,7 +15,7 @@ const usePomodoroController = () => {
   const [toggleStart, setToggleStart] = useState(true);
 
   const [pomReason, setPomReason] = useState("Work");
-  const pomodoroTime = useRef(getPomodoroTime());
+  const pomodoroTime = useRef(localStorage.getItem('pomDuration'));
   const pomCount = useRef(0);
 
   const currentTime = useRef(0);
@@ -21,6 +24,16 @@ const usePomodoroController = () => {
   const [isQuestion, setIsQuestion] = useState(false);
 
   useEffect(() => {
+    if(!pomodoroTime.current) {
+      let minWork = localStorage.getItem('minWork');
+      if(minWork) {
+        pomodoroTime.current = minWork;
+      }
+
+      else {
+        pomodoroTime.current = 300;
+      }
+    }
     onResetTime();
 
   }, []);
@@ -181,17 +194,20 @@ const usePomodoroController = () => {
   }
   function onBtnNormal() {
     setIsQuestion(false);
+    localStorage.setItem('difficult', 0);
   }
   function onBtnEasy() {
     setIsQuestion(false);
+    localStorage.setItem('difficult', localStorage.getItem("difficult") - 1);
   }
 
   function getPomodoroTime() {
-    return localStorage.getItem("minWork");
+    return calculateTime(pomReason);
   }
 
   function updatePomodoroTime() {
     pomodoroTime.current = getPomodoroTime();
+    onResetTime();
   }
 
   function calcReason() {
